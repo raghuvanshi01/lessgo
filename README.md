@@ -1,4 +1,4 @@
-# DSA Bible
+# DSA GEETA
 
 > Learn algorithms by recognizing patterns, not by memorizing solutions.
 
