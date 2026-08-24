@@ -230,6 +230,12 @@
 
     .pcard.hidden { display: none; }
     .q-item-wrap.hidden { display: none; }
+    .q-must-badge { font-size:0.62rem; background:#1a1040; border:1px solid #6d28d9; color:#a78bfa; border-radius:999px; padding:1px 6px; flex-shrink:0; }
+    .must-filter-btn { padding:4px 12px; border-radius:999px; border:1px solid var(--border); background:transparent; color:var(--text-muted); font-size:0.75rem; cursor:pointer; transition:all 0.15s; flex-shrink:0; }
+    .must-filter-btn.active { background:#1a1040; border-color:#6d28d9; color:#a78bfa; }
+    .rev-must-filter { display:flex; gap:8px; align-items:center; margin-bottom:14px; }
+    .rev-must-filter button { padding:5px 14px; border-radius:999px; border:1px solid var(--border); background:transparent; color:var(--text-muted); font-size:0.78rem; cursor:pointer; transition:all 0.15s; }
+    .rev-must-filter button.active { background:#1a1040; border-color:#6d28d9; color:#a78bfa; }
 
     /* COMMON MISTAKES */
     .mistakes-block { padding: 14px 16px; }
@@ -355,6 +361,12 @@
     .rev-due-label.overdue { background:#2e0e18; color:#f87171; }
     .rev-due-label.today   { background:#2e1e08; color:#fbbf24; }
     .rev-due-label.upcoming { background:#0c2e24; color:#34d399; }
+    .rev-status-btns { display:flex; gap:4px; flex-shrink:0; }
+    .rev-status-btn { background:transparent; border:1px solid var(--border); border-radius:999px; padding:2px 8px; font-size:0.72rem; cursor:pointer; color:var(--text-muted); transition:all 0.15s; line-height:1.4; }
+    .rev-status-btn:hover { border-color:var(--border2); color:var(--text); }
+    .rev-status-btn.active-R { background:#2e0e18; border-color:#f87171; color:#f87171; }
+    .rev-status-btn.active-Y { background:#2e1e08; border-color:#fbbf24; color:#fbbf24; }
+    .rev-status-btn.active-G { background:#0c2e24; border-color:#34d399; color:#34d399; }
 
     /* ── PROGRESS STRIP ───────────────────────────────────── */
     .progress-strip { padding: 10px 32px 14px; }
@@ -669,6 +681,122 @@ const QS = (() => {
 const SRS_INTERVALS = [1, 3, 7, 21, 60];
 // Days until next review per status
 const Q_INTERVALS = { R: 1, Y: 3, G: 7 };
+
+// ── Must-Do list: top product-company (FAANG/Flipkart/Uber/MS) questions ──────
+const MUST_DO = new Set([
+  // Arrays / Two Pointers
+  "two-sum","3sum","container-with-most-water","trapping-rain-water",
+  "product-of-array-except-self","maximum-subarray","maximum-product-subarray",
+  "find-minimum-in-rotated-sorted-array","search-in-rotated-sorted-array",
+  "rotate-image","spiral-matrix","set-matrix-zeroes","game-of-life",
+  "sort-colors","next-permutation","maximum-sum-circular-subarray",
+  "subarray-sum-equals-k","count-number-of-nice-subarrays",
+  "longest-consecutive-sequence","contains-duplicate","move-zeroes",
+  "best-time-to-buy-and-sell-stock-ii","maximum-points-you-can-obtain-from-cards",
+  "continuous-subarray-sum","subarray-sums-divisible-by-k",
+  "subarray-product-less-than-k","majority-element","majority-element-ii",
+  "largest-number","is-subsequence",
+  // Sliding Window
+  "minimum-window-substring","longest-substring-without-repeating-characters",
+  "longest-repeating-character-replacement","permutation-in-string",
+  "sliding-window-maximum","find-all-anagrams-in-a-string",
+  "minimum-size-subarray-sum","fruit-into-baskets",
+  "longest-substring-with-at-most-k-distinct-characters",
+  "max-consecutive-ones-iii","minimum-operations-to-reduce-x-to-zero",
+  // Binary Search
+  "binary-search","search-in-rotated-sorted-array","find-minimum-in-rotated-sorted-array",
+  "find-first-and-last-position-of-element-in-sorted-array",
+  "search-a-2d-matrix","search-a-2d-matrix-ii","koko-eating-bananas",
+  "median-of-two-sorted-arrays","split-array-largest-sum",
+  "capacity-to-ship-packages-within-d-days","find-peak-element",
+  "time-based-key-value-store","kth-smallest-element-in-a-sorted-matrix",
+  "find-k-th-smallest-pair-distance","first-bad-version",
+  // Strings
+  "longest-palindromic-substring","group-anagrams","valid-anagram",
+  "valid-palindrome","encode-and-decode-strings","palindromic-substrings",
+  "minimum-window-substring","word-break","longest-common-subsequence",
+  "edit-distance","regular-expression-matching","wildcard-matching",
+  "decode-ways","word-ladder","word-ladder-ii","generate-parentheses",
+  "longest-valid-parentheses","minimum-remove-to-make-valid-parentheses",
+  "remove-invalid-parentheses",
+  // Linked List
+  "reverse-linked-list","reverse-linked-list-ii","linked-list-cycle","linked-list-cycle-ii",
+  "merge-two-sorted-lists","merge-k-sorted-lists","remove-nth-node-from-end-of-list",
+  "reorder-list","copy-list-with-random-pointer","lru-cache",
+  "add-two-numbers","palindrome-linked-list","reverse-nodes-in-k-group",
+  "intersection-of-two-linked-lists","middle-of-the-linked-list",
+  "sort-list","flatten-a-multilevel-doubly-linked-list",
+  // Stack & Queue
+  "valid-parentheses","min-stack","daily-temperatures","largest-rectangle-in-histogram",
+  "evaluate-reverse-polish-notation","decode-string","remove-k-digits",
+  "remove-duplicate-letters","trapping-rain-water","basic-calculator",
+  "basic-calculator-ii","sliding-window-maximum","next-greater-element-ii",
+  "sum-of-subarray-minimums","maximum-frequency-stack","lfu-cache",
+  "132-pattern","asteroid-collision","implement-queue-using-stacks",
+  // Trees
+  "maximum-depth-of-binary-tree","balanced-binary-tree",
+  "binary-tree-inorder-traversal","binary-tree-preorder-traversal","binary-tree-postorder-traversal",
+  "binary-tree-level-order-traversal","binary-tree-right-side-view",
+  "lowest-common-ancestor-of-a-binary-tree","validate-binary-search-tree",
+  "kth-smallest-element-in-a-bst","binary-tree-maximum-path-sum",
+  "serialize-and-deserialize-binary-tree","construct-binary-tree-from-preorder-and-inorder-traversal",
+  "construct-binary-search-tree-from-preorder-traversal",
+  "convert-sorted-array-to-binary-search-tree",
+  "path-sum-iii","diameter-of-binary-tree","flatten-binary-tree-to-linked-list",
+  "count-good-nodes-in-binary-tree","binary-tree-zigzag-level-order-traversal",
+  "lowest-common-ancestor-of-a-binary-search-tree",
+  "all-nodes-distance-k-in-binary-tree","house-robber-iii",
+  "binary-search-tree-iterator",
+  // Tries
+  "implement-trie-prefix-tree","design-add-and-search-words-data-structure",
+  "word-search-ii","word-break-ii",
+  // Graphs
+  "number-of-islands","pacific-atlantic-water-flow",
+  "number-of-connected-components-in-an-undirected-graph","number-of-provinces",
+  "course-schedule","course-schedule-ii","longest-increasing-path-in-a-matrix",
+  "alien-dictionary","surrounded-regions","rotting-oranges","minimum-height-trees",
+  "find-eventual-safe-states","redundant-connection","network-delay-time",
+  "shortest-path-in-binary-matrix","swim-in-rising-water",
+  "cheapest-flights-within-k-stops","accounts-merge",
+  "01-matrix","flood-fill","max-area-of-island","walls-and-gates",
+  "is-graph-bipartite","critical-connections-in-a-network","reconstruct-itinerary",
+  "most-stones-removed-with-same-row-or-column",
+  "path-with-minimum-effort","min-cost-to-connect-all-points",
+  // Dynamic Programming
+  "climbing-stairs","coin-change","coin-change-ii","longest-increasing-subsequence",
+  "unique-paths","unique-paths-ii","unique-binary-search-trees",
+  "word-break","combination-sum-iv","house-robber","house-robber-ii",
+  "decode-ways","jump-game","jump-game-ii","partition-equal-subset-sum",
+  "target-sum","interleaving-string","edit-distance","longest-palindromic-subsequence",
+  "distinct-subsequences","burst-balloons",
+  "best-time-to-buy-and-sell-stock","best-time-to-buy-and-sell-stock-iii",
+  "best-time-to-buy-and-sell-stock-iv","best-time-to-buy-and-sell-stock-with-cooldown",
+  "best-time-to-buy-and-sell-stock-with-transaction-fee",
+  "minimum-path-sum","triangle","minimum-cost-for-tickets","perfect-squares",
+  "russian-doll-envelopes","range-sum-query-mutable",
+  // Backtracking
+  "combination-sum","combination-sum-ii","subsets","subsets-ii",
+  "permutations","permutations-ii","word-search","n-queens",
+  "palindrome-partitioning","letter-combinations-of-a-phone-number",
+  "restore-ip-addresses","generate-parentheses","sudoku-solver",
+  // Heap / PQ
+  "find-median-from-data-stream","kth-largest-element-in-an-array",
+  "top-k-frequent-elements","top-k-frequent-words","merge-k-sorted-lists",
+  "k-closest-points-to-origin","task-scheduler","reorganize-string",
+  "find-k-pairs-with-smallest-sums","smallest-range-covering-elements-from-k-lists",
+  "single-threaded-cpu","ipo",
+  // Bit Manipulation
+  "single-number","number-of-1-bits","counting-bits","reverse-bits",
+  "missing-number","sum-of-two-integers","maximum-xor-of-two-numbers-in-an-array",
+  // Math & Hashing
+  "happy-number","powx-n","insert-delete-getrandom-o1","lru-cache","lfu-cache",
+  "max-points-on-a-line","random-pick-with-weight",
+  // Greedy
+  "jump-game","jump-game-ii","gas-station","candy","task-scheduler",
+  "minimum-number-of-arrows-to-burst-balloons","non-overlapping-intervals",
+  "queue-reconstruction-by-height","merge-intervals","insert-interval",
+  "two-city-scheduling","meeting-rooms","meeting-rooms-ii","car-pooling",
+]);
 
 const DATA = [
 
@@ -6330,12 +6458,15 @@ DATA.forEach((topic, ti) => {
       const qsTitle = qs === 'G' ? 'Green — review in 7d' : qs === 'Y' ? 'Yellow — review in 3d' : qs === 'R' ? 'Red — review tomorrow' : 'Unrated — click to rate';
       const noteVal = QS.getN(qk);
       const hasNote = noteVal.trim().length > 0;
-      return `<div class="q-item-wrap" data-qw="${qk}">
+      const lcSlug = q.lc ? q.lc.replace('https://leetcode.com/problems/','').replace(/\//g,'') : '';
+      const isMust = MUST_DO.has(lcSlug);
+      return `<div class="q-item-wrap${isMust?' must-q':''}" data-qw="${qk}">
         <div class="q-item" data-q="${(q.q + ' ' + pat.name).toLowerCase()}">
           <span class="q-status" data-s="${qs}" data-qk="${qk}" title="${qsTitle}">${qsIcon}</span>
           <span class="qn">${qi+1}</span>
           ${q.lc ? `<a class="qt qt-link" href="${q.lc}" target="_blank" rel="noopener">${q.q}</a>` : `<span class="qt">${q.q}</span>`}
           <span class="diff ${q.d}">${q.d==='E'?'Easy':q.d==='M'?'Med':'Hard'}</span>
+          ${isMust ? `<span class="q-must-badge" title="Frequently asked at product companies">🏢 Must</span>` : ''}
           <button class="q-note-btn${hasNote ? ' has-note' : ''}" data-nk="${qk}" title="${hasNote ? 'View/edit note' : 'Add note'}">📝</button>
         </div>
         <div class="q-note-area${hasNote ? ' open' : ''}" id="note-area-${qk}">
@@ -6385,6 +6516,9 @@ DATA.forEach((topic, ti) => {
           ${codeHtml}
         </div>
         <div class="tab-panel" data-panel="questions" id="panel-questions-${cardId}">
+          <div style="display:flex;align-items:center;gap:8px;padding:8px 16px 4px;">
+            <button class="must-filter-btn" data-card="${cardId}" title="Show only must-do questions">🏢 Must-Do Only</button>
+          </div>
           ${qsHtml}
         </div>
         <div class="tab-panel" data-panel="mistakes" id="panel-mistakes-${cardId}">
@@ -6399,6 +6533,19 @@ DATA.forEach((topic, ti) => {
 
     // Toggle card open/close on header click
     card.querySelector('.pcard-head').addEventListener('click', () => card.classList.toggle('open'));
+
+    // Must-Do filter toggle
+    const mustBtn = card.querySelector('.must-filter-btn');
+    if (mustBtn) {
+      mustBtn.addEventListener('click', e => {
+        e.stopPropagation();
+        const isActive = mustBtn.classList.toggle('active');
+        card.querySelectorAll('.q-item-wrap').forEach(w => {
+          if (isActive) w.classList.toggle('hidden', !w.classList.contains('must-q'));
+          else w.classList.remove('hidden');
+        });
+      });
+    }
 
     // Tab switching
     card.querySelectorAll('.card-tab').forEach(tab => {
@@ -6510,14 +6657,14 @@ DATA.forEach((topic, ti) => {
       dot.dataset.s = next;
       const pd = QS.getP(cardId);
       const now = Date.now();
-      // SRS scheduling: marking G schedules next review at current interval; R/Y schedules tomorrow; none clears
+      // SRS scheduling: marking G schedules next review at next interval; R/Y schedules tomorrow; none clears
       let nextDue = null, nextInterval = 1;
       if (next !== 'none') {
         const curInterval = pd.interval || 1;
         const iIdx = SRS_INTERVALS.indexOf(curInterval);
         if (next === 'G') {
           nextInterval = SRS_INTERVALS[Math.min(iIdx + 1, SRS_INTERVALS.length - 1)];
-          nextDue = now + curInterval * 86400000;
+          nextDue = now + nextInterval * 86400000;
         } else {
           nextInterval = 1;
           nextDue = now + 86400000;
@@ -6542,18 +6689,37 @@ DATA.forEach((topic, ti) => {
         if (next === 'U') {
           QS.setQ(qk, null);
         } else {
-          const days = Q_INTERVALS[next];
-          const nextDue = Date.now() + days * 86400000;
-          QS.setQ(qk, {
-            status: next, nextDue,
-            markedAt: Date.now(),
-            qName: q ? q.q : '', lc: q ? q.lc : '',
-            diff: q ? q.d : '',
-            patternName: pat.name,
-            topicLabel: topic.label,
-            topicId: topic.id,
-            cardId,
-          });
+          const existing = QS.allQ()[qk] || {};
+          let days;
+          if (next === 'G') {
+            // advance SRS interval each time marked Green
+            const curInterval = existing.interval || 1;
+            const iIdx = SRS_INTERVALS.indexOf(curInterval);
+            const nextInterval = SRS_INTERVALS[Math.min(iIdx + 1, SRS_INTERVALS.length - 1)];
+            days = nextInterval;
+            QS.setQ(qk, {
+              status: next, nextDue: Date.now() + days * 86400000,
+              interval: nextInterval, markedAt: Date.now(),
+              qName: q ? q.q : '', lc: q ? q.lc : '',
+              diff: q ? q.d : '',
+              patternName: pat.name,
+              topicLabel: topic.label,
+              topicId: topic.id,
+              cardId,
+            });
+          } else {
+            days = Q_INTERVALS[next];
+            QS.setQ(qk, {
+              status: next, nextDue: Date.now() + days * 86400000,
+              interval: 1, markedAt: Date.now(),
+              qName: q ? q.q : '', lc: q ? q.lc : '',
+              diff: q ? q.d : '',
+              patternName: pat.name,
+              topicLabel: topic.label,
+              topicId: topic.id,
+              cardId,
+            });
+          }
         }
         updateQBadge(cardId, pat);
         updateProgress();
@@ -6659,11 +6825,11 @@ function buildReviewSection(sec) {
       html += `<span class="rev-q-count">${g.qs.length} question${g.qs.length > 1 ? 's' : ''}</span>`;
       html += `</div>`;
       html += `<div class="rev-q-list">`;
-      g.qs.forEach(({ d, daysLeft }) => {
+      g.qs.forEach(({ key, d, daysLeft }) => {
         const badge = d.status === 'R' ? '🔴' : d.status === 'Y' ? '🟡' : '🟢';
         const dueLabel = daysLeft < 0 ? `${Math.abs(daysLeft)}d overdue` : daysLeft === 0 ? 'Today' : `In ${daysLeft}d`;
         const dueCls = daysLeft < 0 ? 'overdue' : daysLeft === 0 ? 'today' : 'upcoming';
-        html += `<div class="rev-q-row">`;
+        html += `<div class="rev-q-row${MUST_DO.has((d.lc||'').replace('https://leetcode.com/problems/','').replace(/\//g,''))?'  rev-must-q':''}" data-qk="${key}">`;
         html += `<span class="rev-q-badge">${badge}</span>`;
         if (d.lc) {
           html += `<a class="rev-q-name" href="${d.lc}" target="_blank" rel="noopener">${d.qName}</a>`;
@@ -6672,6 +6838,11 @@ function buildReviewSection(sec) {
         }
         html += `<span class="rev-diff ${d.diff}">${d.diff === 'E' ? 'Easy' : d.diff === 'M' ? 'Med' : 'Hard'}</span>`;
         html += `<span class="rev-due-label ${dueCls}">${dueLabel}</span>`;
+        html += `<div class="rev-status-btns">`;
+        html += `<button class="rev-status-btn${d.status==='R'?' active-R':''}" data-qk="${key}" data-s="R" title="Hard — review tomorrow">🔴</button>`;
+        html += `<button class="rev-status-btn${d.status==='Y'?' active-Y':''}" data-qk="${key}" data-s="Y" title="Shaky — review in 3d">🟡</button>`;
+        html += `<button class="rev-status-btn${d.status==='G'?' active-G':''}" data-qk="${key}" data-s="G" title="Got it — SRS interval advances">🟢</button>`;
+        html += `</div>`;
         html += `</div>`;
       });
       html += `</div></div>`;
@@ -6694,6 +6865,7 @@ function buildReviewSection(sec) {
   html += `<div class="rst upcoming"><div class="rst-n">${upcoming.length}</div><div class="rst-l">This Week</div></div>`;
   html += `<div class="rst"><div class="rst-n">${totalTracked}</div><div class="rst-l">Tracked</div></div>`;
   html += `</div></div>`;
+  html += `<div class="rev-must-filter"><button data-rev-filter="all" class="active">All</button><button data-rev-filter="must">🏢 Must-Do Only</button></div>`;
 
   if (totalTracked === 0) {
     html += `<div class="review-empty">
@@ -6742,7 +6914,54 @@ function buildReviewSection(sec) {
       }, 60);
     });
   });
-}
+
+  // Wire Must-Do filter in revision tab
+  sec.querySelectorAll('.rev-must-filter button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      sec.querySelectorAll('.rev-must-filter button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const filter = btn.dataset.revFilter;
+      sec.querySelectorAll('.rev-q-row').forEach(row => {
+        if (filter === 'must') row.style.display = row.classList.contains('rev-must-q') ? '' : 'none';
+        else row.style.display = '';
+      });
+    });
+  });
+
+  // Wire inline status buttons in revision tab
+  sec.querySelectorAll('.rev-status-btn').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      const qk = btn.dataset.qk;
+      const newStatus = btn.dataset.s;
+      const existing = QS.allQ()[qk] || {};
+      let nextInterval = 1;
+      let days;
+      if (newStatus === 'G') {
+        const curInterval = existing.interval || 1;
+        const iIdx = SRS_INTERVALS.indexOf(curInterval);
+        nextInterval = SRS_INTERVALS[Math.min(iIdx + 1, SRS_INTERVALS.length - 1)];
+        days = nextInterval;
+      } else {
+        days = Q_INTERVALS[newStatus];
+        nextInterval = 1;
+      }
+      QS.setQ(qk, {
+        ...existing,
+        status: newStatus,
+        nextDue: Date.now() + days * 86400000,
+        interval: nextInterval,
+        markedAt: Date.now(),
+      });
+      // Also sync the dot on the pattern card if visible
+      const dot = document.querySelector(`.pstatus-dot[data-pk="${existing.cardId}"]`);
+      if (dot) dot.dataset.s = newStatus;
+      // Re-render review section to reflect updated buckets
+      buildReviewSection(sec);
+      Sync.scheduleSync();
+    });
+  });
+} // end buildReviewSection
 // Add Review nav button + section
 const reviewBtn = document.createElement('button');
 reviewBtn.textContent = '📅 Revision';
